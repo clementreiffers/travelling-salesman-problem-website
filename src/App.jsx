@@ -30,17 +30,18 @@ const App = () => {
     (p5) =>
     ({ x, y, value }) => {
       p5.fill(255);
-      p5.ellipse(x * scale, y * scale, 10, 10);
+      p5.ellipse((x / 100) * width, (y / 100) * height, 10, 10);
       p5.fill(255, 0, 0);
-      p5.text(value, x * scale, y * scale);
+      p5.text(value, (x / 100) * width, (y / 100) * height);
     };
   const setLine = (p5) => (city1, city2) => {
     p5.stroke(255, 0, 0);
-    const x1 = city1.x;
-    const y1 = city1.y;
-    const x2 = city2.x;
-    const y2 = city2.y;
-    p5.line(x1 * scale, y1 * scale, x2 * scale, y2 * scale);
+    p5.line(
+      (city1.x / 100) * width,
+      (city1.y / 100) * height,
+      (city2.x / 100) * width,
+      (city2.y / 100) * height
+    );
   };
   const setAllPointsFromMap = (p5, map) => {
     p5.noStroke();
