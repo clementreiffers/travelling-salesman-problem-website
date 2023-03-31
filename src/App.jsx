@@ -1,6 +1,6 @@
 import "./App.css";
 import { createMap } from "genetic-travelling-salesman-problem/App/Genetics/map";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sketch from "react-p5";
 import * as R from "ramda";
 import { createPop } from "genetic-travelling-salesman-problem/App/Genetics/population";
@@ -13,8 +13,16 @@ const MAX_ITERATIONS = 100;
 
 const App = () => {
   const scale = 10;
-  const map = createMap(MAX_CITIES);
-  let population = createPop(MAX_POPULATION)(MAX_CITIES);
+
+  const [map, setMap] = useState({});
+  const [population, setPopulation] = useState([]);
+  const [AllGeneration, setGeneration] = useState([]);
+
+  useEffect(() => {
+    setMap(createMap(MAX_CITIES));
+    setPopulation(createPop(MAX_POPULATION)(MAX_CITIES));
+    setGeneration(R.times(changePopulation, MAX_ITERATIONS));
+  }, [window.screen]);
 
   const { width, height } = window.screen;
 
@@ -40,15 +48,12 @@ const App = () => {
   };
 
   const changePopulation = () => {
-    population = nextGeneration(map)(MAX_DISTANCE)(population);
-    return population;
+    return nextGeneration(map)(MAX_DISTANCE)(population);
   };
 
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(width, height).parent(canvasParentRef);
   };
-
-  const repeatNextGeneration = R.times(changePopulation, MAX_ITERATIONS);
 
   const draw = (p5) => {
     p5.background(0);
@@ -58,16 +63,6 @@ const App = () => {
       setLine(p5)(map[c1], map[c2]);
     }
   };
-
-  const getResults = R.pipe(
-    R.applySpec({
-      firstIteration: R.head,
-      lastIteration: R.last,
-    }),
-    R.map(R.head)
-  );
-
-  const bestIterationPath = getResults(repeatNextGeneration).lastIteration.path;
 
   return (
     <>
