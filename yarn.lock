@@ -9159,7 +9159,7 @@ raf@3.4.1:
   dependencies:
     performance-now "^2.1.0"
 
-ramda@latest:
+ramda@^0.28.0, ramda@latest:
   version "0.28.0"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.28.0.tgz#acd785690100337e8b063cab3470019be427cc97"
   integrity sha512-9QnLuG/kPVgWvMQ4aODhsBUFKOUmnbUnsSXACv+NCQZcHbeb+v8Lodp8OVxtRULN1/xOyYLLaL6npE6dMq5QTA==
