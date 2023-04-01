@@ -6,22 +6,27 @@ import * as R from "ramda";
 import { createPop } from "genetic-travelling-salesman-problem/App/Genetics/population";
 import nextGeneration from "genetic-travelling-salesman-problem/App/Genetics/next-gen";
 
-const MAX_CITIES = 100;
-const MAX_POPULATION = 50;
-const MAX_DISTANCE = 10000000000;
-const MAX_ITERATIONS = 100;
-
 const App = () => {
-  const scale = 10;
+  const parameters = {
+    maxCities: 100,
+    maxPopulation: 50,
+    maxDistance: undefined,
+    maxIterations: 100,
+    width: window.screen.width,
+    height: window.screen.height,
+  };
 
   const [map, setMap] = useState({});
   const [population, setPopulation] = useState([]);
   const [AllGeneration, setGeneration] = useState([]);
 
+  const repeatNextGeneration = ({ maxIterations }) =>
+    R.times(changePopulation, maxIterations);
+
   useEffect(() => {
-    setMap(createMap(MAX_CITIES));
-    setPopulation(createPop(MAX_POPULATION)(MAX_CITIES));
-    setGeneration(R.times(changePopulation, MAX_ITERATIONS));
+    setMap(createMap(parameters));
+    setPopulation(createPop(parameters));
+    setGeneration(repeatNextGeneration(parameters));
   }, [window.screen]);
 
   const { width, height } = window.screen;
@@ -30,18 +35,13 @@ const App = () => {
     (p5) =>
     ({ x, y, value }) => {
       p5.fill(255);
-      p5.ellipse((x / 100) * width, (y / 100) * height, 10, 10);
+      p5.ellipse(x, y, 10, 10);
       p5.fill(255, 0, 0);
-      p5.text(value, (x / 100) * width, (y / 100) * height);
+      p5.text(value, x, y);
     };
   const setLine = (p5) => (city1, city2) => {
     p5.stroke(255, 0, 0);
-    p5.line(
-      (city1.x / 100) * width,
-      (city1.y / 100) * height,
-      (city2.x / 100) * width,
-      (city2.y / 100) * height
-    );
+    p5.line(city1.x, city1.y, city2.x, city2.y);
   };
   const setAllPointsFromMap = (p5, map) => {
     p5.noStroke();
@@ -49,7 +49,7 @@ const App = () => {
   };
 
   const changePopulation = () => {
-    return nextGeneration(map)(MAX_DISTANCE)(population);
+    return nextGeneration(map, parameters, population);
   };
 
   const setup = (p5, canvasParentRef) => {
