@@ -18,7 +18,6 @@ const App = () => {
 
   const [map, setMap] = useState({});
   const [population, setPopulation] = useState([]);
-  const [AllGeneration, setGeneration] = useState([]);
 
   const repeatNextGeneration = ({ maxIterations }) =>
     R.times(changePopulation, maxIterations);
@@ -28,7 +27,6 @@ const App = () => {
   useEffect(() => {
     setMap(createMap(parameters));
     setPopulation(createPop(parameters));
-    setGeneration(repeatNextGeneration(parameters));
     console.log("done!");
   }, [width, height]);
 
@@ -61,20 +59,33 @@ const App = () => {
 
   const getBestPath = R.pipe(R.head, R.prop("path"));
 
+  const addFirstAndLastElement = (arr) =>
+    R.concat([R.head(arr), R.last(arr)], arr);
+
+  const generatePathLinks = R.pipe(
+    getBestPath,
+    addFirstAndLastElement,
+    R.tap(console.log),
+    R.aperture(2)
+  );
+
   const draw = (p5) => {
     p5.background(0);
     setAllPointsFromMap(p5, map);
-    setPopulation(changePopulation());
-    console.log(population);
-    for (let [c1, c2] of R.aperture(2, getBestPath(population))) {
-      if (c1 === undefined || c2 === undefined) continue;
-      setLine(p5)(map[c1], map[c2]);
+    const pop = changePopulation();
+    if (pop.length) {
+      p5.text("score:" + getBestScore(pop), 10, 10);
+      for (let [c1, c2] of generatePathLinks(pop)) {
+        if (c1 === undefined || c2 === undefined) continue;
+        setLine(p5)(map[c1], map[c2]);
+      }
+      setPopulation(pop);
     }
   };
 
   return (
     <>
-      <p>Score : {getBestScore(population)}</p>
+      {/*<p>Score : {getBestScore(population)}</p>*/}
       <Sketch setup={setup} draw={draw} />
     </>
   );
