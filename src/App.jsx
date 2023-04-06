@@ -8,7 +8,7 @@ import nextGeneration from "genetic-travelling-salesman-problem/App/Genetics/nex
 
 const App = () => {
   const parameters = {
-    maxCities: 20,
+    maxCities: 50,
     maxPopulation: 1000,
     maxDistance: undefined,
     maxIterations: 100,
@@ -18,9 +18,6 @@ const App = () => {
 
   const [map, setMap] = useState({});
   const [population, setPopulation] = useState([]);
-
-  const repeatNextGeneration = ({ maxIterations }) =>
-    R.times(changePopulation, maxIterations);
 
   const { width, height } = window.screen;
 
@@ -36,7 +33,7 @@ const App = () => {
       p5.fill(255);
       p5.ellipse(x, y, 10, 10);
       p5.fill(255, 0, 0);
-      p5.text(value, x, y);
+      parameters.maxDistance && p5.text(value, x, y);
     };
   const setLine = (p5) => (city1, city2) => {
     p5.stroke(255, 0, 0);
@@ -85,7 +82,6 @@ const App = () => {
 
   return (
     <>
-      {/*<p>Score : {getBestScore(population)}</p>*/}
       <Sketch setup={setup} draw={draw} />
     </>
   );
