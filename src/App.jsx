@@ -8,8 +8,8 @@ import nextGeneration from "genetic-travelling-salesman-problem/App/Genetics/nex
 
 const App = () => {
   const parameters = {
-    maxCities: 100,
-    maxPopulation: 50,
+    maxCities: 20,
+    maxPopulation: 1000,
     maxDistance: undefined,
     maxIterations: 100,
     width: window.screen.width,
@@ -23,13 +23,14 @@ const App = () => {
   const repeatNextGeneration = ({ maxIterations }) =>
     R.times(changePopulation, maxIterations);
 
+  const { width, height } = window.screen;
+
   useEffect(() => {
     setMap(createMap(parameters));
     setPopulation(createPop(parameters));
     setGeneration(repeatNextGeneration(parameters));
-  }, [window.screen]);
-
-  const { width, height } = window.screen;
+    console.log("done!");
+  }, [width, height]);
 
   const setPoint =
     (p5) =>
@@ -56,17 +57,24 @@ const App = () => {
     p5.createCanvas(width, height).parent(canvasParentRef);
   };
 
+  const getBestScore = R.pipe(R.head, R.prop("score"));
+
+  const getBestPath = R.pipe(R.head, R.prop("path"));
+
   const draw = (p5) => {
     p5.background(0);
     setAllPointsFromMap(p5, map);
-    for (let [c1, c2] in R.aperture(2)(population)) {
-      if (c2 === undefined) continue;
+    setPopulation(changePopulation());
+    console.log(population);
+    for (let [c1, c2] of R.aperture(2, getBestPath(population))) {
+      if (c1 === undefined || c2 === undefined) continue;
       setLine(p5)(map[c1], map[c2]);
     }
   };
 
   return (
     <>
+      <p>Score : {getBestScore(population)}</p>
       <Sketch setup={setup} draw={draw} />
     </>
   );
