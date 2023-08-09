@@ -1,20 +1,20 @@
 import "./App.css";
 import { createMap } from "genetic-travelling-salesman-problem/App/Genetics/map";
-import React, { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Sketch from "react-p5";
 import * as R from "ramda";
 import { createPop } from "genetic-travelling-salesman-problem/App/Genetics/population";
 import nextGeneration from "genetic-travelling-salesman-problem/App/Genetics/next-gen";
 
 const App = () => {
-  const parameters = {
+  const parameters = useMemo(() => ({
     maxCities: 50,
     maxPopulation: 1000,
     maxDistance: undefined,
     maxIterations: 100,
     width: window.screen.width,
     height: window.screen.height,
-  };
+  }), []);
 
   const [map, setMap] = useState({});
   const [population, setPopulation] = useState([]);
@@ -24,8 +24,7 @@ const App = () => {
   useEffect(() => {
     setMap(createMap(parameters));
     setPopulation(createPop(parameters));
-    console.log("done!");
-  }, [width, height]);
+  }, [width, height, parameters]);
 
   const setPoint =
     (p5) =>
@@ -62,7 +61,6 @@ const App = () => {
   const generatePathLinks = R.pipe(
     getBestPath,
     addFirstAndLastElement,
-    R.tap(console.log),
     R.aperture(2)
   );
 

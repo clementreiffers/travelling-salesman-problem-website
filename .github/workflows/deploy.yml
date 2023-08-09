@@ -10,8 +10,20 @@ permissions:
   security-events: write
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: install dependencies
+        run: yarn
+      
+      - name: linter
+        run: yarn lint
+
   build:
     runs-on: ubuntu-latest
+    needs: [ "test" ]
     steps:
       - uses: actions/checkout@v3
 
