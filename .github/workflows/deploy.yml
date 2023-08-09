@@ -1,0 +1,27 @@
+name: deploy website
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  actions: read
+  contents: write
+  security-events: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: install dependencies
+        run: yarn
+      
+      - name: build website
+        run: yarn build
+      
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./dist   
