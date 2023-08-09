@@ -4,5 +4,5 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "https://github.com/clementreiffers/travelling-salesman-problem-website",
+  base: "https://clementreiffers.github.io/travelling-salesman-problem-website/",
 })
