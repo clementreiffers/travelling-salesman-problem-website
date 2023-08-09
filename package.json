@@ -1,7 +1,7 @@
 {
   "name": "travellling-salesman-problem-website",
   "private": true,
-  "homepage": "https://github.com/clementreiffers/travelling-salesman-problem-website",
+  "homepage": "https://clementreiffers.github.io/travelling-salesman-problem-website/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
